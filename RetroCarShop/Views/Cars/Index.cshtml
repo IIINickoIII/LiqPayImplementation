@@ -1,0 +1,71 @@
+﻿@model IEnumerable<RetroCarShop.ViewModels.CarViewModel>
+@{
+    ViewBag.Title = "Cars";
+}
+<div class="custom">
+    <p></p>
+    @Html.ActionLink("New car", "New", "Cars", routeValues: null, htmlAttributes: new { @class = "btn btn-primary btn-sm" })
+    <p></p>
+    <table id="cars" class="table table-hover">
+        <thead>
+            <tr scope="row">
+                <th>Name</th>
+                <th>Production Year</th>
+                <th>Mileage</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var car in Model)
+            {
+                <tr scope="row">
+                    <td>@Html.ActionLink(car.Name, "Edit", "Cars", htmlAttributes: null, routeValues: new { carId = car.Id })</td>
+                    <td>@car.YearOfManufacturing</td>
+                    <td>@car.Mileage miles</td>
+                    <td>@car.Price $</td>
+                    @if (car.IsSold)
+                    {
+                        <td><span class="badge badge-pill badge-danger">Sold</span></td>
+                    }
+                    else
+                    {
+                         <td>
+                            <form method="POST" accept-charset="utf-8" action="https://www.liqpay.ua/api/3/checkout">
+                                <input type="hidden" name="data" value="@car.LiqPayCheckoutFormModel.Data" />
+                                <input type="hidden" name="signature" value="@car.LiqPayCheckoutFormModel.Signature" />
+                                <button style="border: none !important; display:inline-block !important;text-align: center !important;padding: 7px 20px !important;
+                                        color: #fff !important; font-size:16px !important; font-weight: 600 !important; font-family:OpenSans, sans-serif; cursor: pointer !important; border-radius: 2px !important;
+                                        background: rgb(122,183,43) !important;" onmouseover="this.style.opacity='0.5';" onmouseout="this.style.opacity='1';">
+                                    <img src="https://static.liqpay.ua/buttons/logo-small.png" name="btn_text"
+                                         style="margin-right: 7px !important; vertical-align: middle !important;" />
+                                    <span style="vertical-align:middle !important">Pay</span>
+                                </button>
+                            </form>
+                        </td>   
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section scripts
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#cars').DataTable({
+                columns: [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {
+                        orderable: false
+                    }
+                ]
+            });
+        });
+    </script>
+}
